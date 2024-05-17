@@ -1,2 +1,8 @@
 .idea/
 venv
+alembic
+db.sqlite3
+advertisement.db
+__pycache__/
+autoria_scraper/__pycache__/
+car_info/__pycache__/
