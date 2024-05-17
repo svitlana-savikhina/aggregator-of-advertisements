@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from urllib.parse import urljoin
+
 
 import requests
 from bs4 import BeautifulSoup
@@ -9,12 +9,11 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from sqlalchemy import func
 
+from car_info.router import HOME_URL
 from database import SessionLocal
 from car_info.models import Car
 
-BASE_URL = "https://auto.ria.com/uk/"
 
-HOME_URL = urljoin(BASE_URL, "auto_hyundai_tucson_34825798.html")
 
 
 @dataclass
@@ -48,24 +47,33 @@ def get_advertisement_info():
 
     name = soup.find("h3", class_="auto-content_title").text.strip()
 
-    price_text = soup.find('div', class_='price_value').find('strong').text.strip()
-    price_digits = ''.join(filter(str.isdigit, price_text))
-    price = int(price_digits.replace(' ', ''))
+    price_text = soup.find("div", class_="price_value").find("strong").text.strip()
+    price_digits = "".join(filter(str.isdigit, price_text))
+    price = int(price_digits.replace(" ", ""))
 
     model = soup.find("span", class_="argument d-link__name").text.strip().split()[1]
 
     brand = soup.find("span", class_="argument d-link__name").text.strip().split()[0]
 
-    region = soup.find(id="breadcrumbs").find_all('span')[-3].text.strip()
+    region = soup.find(id="breadcrumbs").find_all("span")[-3].text.strip()
 
-    mileage_text = soup.find("dd", class_="mhide").find("span", class_="argument").text.strip()
+    mileage_text = (
+        soup.find("dd", class_="mhide").find("span", class_="argument").text.strip()
+    )
     mileage = int("".join(filter(str.isdigit, mileage_text)))
 
-    color = (soup.find("div", class_="technical-info", id='details').
-             find('span', class_='car-color').find_parent('span', class_='argument').text)
+    color = (
+        soup.find("div", class_="technical-info", id="details")
+        .find("span", class_="car-color")
+        .find_parent("span", class_="argument")
+        .text
+    )
 
-    salon = (soup.find('span', string='Матеріали салону').
-             find_next('span', class_='argument').text.strip())
+    salon = (
+        soup.find("span", string="Матеріали салону")
+        .find_next("span", class_="argument")
+        .text.strip()
+    )
 
     contacts = get_contact()
 
@@ -81,7 +89,7 @@ def get_advertisement_info():
         color=color,
         salon=salon,
         contacts=contacts,
-        cached_at=cached_at
+        cached_at=cached_at,
     )
 
 
@@ -96,8 +104,7 @@ def save_car_to_database(car_item):
         color=car_item.color,
         salon=car_item.salon,
         contacts=car_item.contacts,
-        cached_at=car_item.cached_at
-
+        cached_at=car_item.cached_at,
     )
     db = SessionLocal()
     db.add(car)
@@ -106,7 +113,4 @@ def save_car_to_database(car_item):
     db.close()
     return car
 
-
-car_item = get_advertisement_info()
-save_car_to_database(car_item)
 
