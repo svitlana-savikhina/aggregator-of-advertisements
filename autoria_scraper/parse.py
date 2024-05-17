@@ -1,7 +1,3 @@
-from dataclasses import dataclass
-from datetime import datetime
-
-
 import requests
 from bs4 import BeautifulSoup
 
@@ -9,25 +5,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from sqlalchemy import func
 
+from autoria_scraper.items import CarItem
 from car_info.router import HOME_URL
 from database import SessionLocal
 from car_info.models import Car
-
-
-
-
-@dataclass
-class CarItem:
-    name: str
-    price: int
-    model: str
-    brand: str
-    region: str
-    mileage: int
-    color: str
-    salon: str
-    contacts: str
-    cached_at: datetime
 
 
 def get_contact():
@@ -112,5 +93,3 @@ def save_car_to_database(car_item):
     db.refresh(car)
     db.close()
     return car
-
-
