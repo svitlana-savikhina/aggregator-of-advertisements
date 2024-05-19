@@ -85,9 +85,7 @@ def get_car_stats(db: Session, brand: str, model: str):
     )
 
 
-"""
-Updating cached data in the database daily
-"""
+"""Updating cached data in the database daily"""
 
 
 def get_cached_data(db: Session):
