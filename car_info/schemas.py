@@ -30,4 +30,3 @@ class CarStats(BaseModel):
     count_per_day: int
     count_per_week: int
     count_per_month: int
-
