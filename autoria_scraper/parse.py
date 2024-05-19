@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from sqlalchemy import func
 
 from autoria_scraper.items import CarItem
-from car_info.router import HOME_URL
+from car_info.urls import HOME_URL
 from database import SessionLocal
 from car_info.models import Car
 

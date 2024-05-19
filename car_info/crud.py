@@ -13,6 +13,8 @@ def get_car(db: Session, car_id: int):
 
 
 def get_cars_by_period(db: Session, start_date: datetime, end_date: datetime):
+    if start_date >= end_date:
+        raise ValueError("Start date must be before end date")
     return (
         db.query(models.Car)
         .filter(models.Car.cached_at >= start_date, models.Car.cached_at <= end_date)
