@@ -3,6 +3,9 @@ from bs4 import BeautifulSoup
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 from sqlalchemy import func
 
 from autoria_scraper.items import CarItem
@@ -14,10 +17,14 @@ from car_info.models import Car
 def get_contact():
     driver = webdriver.Chrome()
     driver.get(HOME_URL)
+    accept_cookies_button = WebDriverWait(driver, 5).until(EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "label.js-close.c-notifier-btn"))
+    )
+    accept_cookies_button.click()
     contact = driver.find_element(By.CLASS_NAME, "contact-phone")
     button = contact.find_element(By.CLASS_NAME, "button")
     button.click()
-    contacts = driver.find_element(By.CLASS_NAME, "popup-successful-call").text
+    contacts = driver.find_element(By.CLASS_NAME, "popup-successful-call-desk").text
     driver.close()
     return contacts
 
@@ -93,3 +100,6 @@ def save_car_to_database(car_item):
     db.refresh(car)
     db.close()
     return car
+
+# if __name__ == "__main__":
+#    get_contact()
