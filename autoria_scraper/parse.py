@@ -17,8 +17,8 @@ from car_info.models import Car
 def get_contact():
     driver = webdriver.Chrome()
     driver.get(HOME_URL)
-    accept_cookies_button = WebDriverWait(driver, 5).until(EC.element_to_be_clickable(
-            (By.CSS_SELECTOR, "label.js-close.c-notifier-btn"))
+    accept_cookies_button = WebDriverWait(driver, 5).until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, "label.js-close.c-notifier-btn"))
     )
     accept_cookies_button.click()
     contact = driver.find_element(By.CLASS_NAME, "contact-phone")
@@ -101,5 +101,4 @@ def save_car_to_database(car_item):
     db.close()
     return car
 
-# if __name__ == "__main__":
-#    get_contact()
+
