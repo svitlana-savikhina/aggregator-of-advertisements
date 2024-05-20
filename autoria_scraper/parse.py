@@ -9,14 +9,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from sqlalchemy import func
 
 from autoria_scraper.items import CarItem
-from car_info.urls import HOME_URL
 from database import SessionLocal
 from car_info.models import Car
 
 
-def get_contact():
+def get_contact(car_url):
     driver = webdriver.Chrome()
-    driver.get(HOME_URL)
+    driver.get(car_url)
     accept_cookies_button = WebDriverWait(driver, 5).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "label.js-close.c-notifier-btn"))
     )
@@ -29,8 +28,8 @@ def get_contact():
     return contacts
 
 
-def get_advertisement_info():
-    page = requests.get(HOME_URL).content
+def get_advertisement_info(car_url):
+    page = requests.get(car_url).content
     soup = BeautifulSoup(page, "html.parser")
 
     name = soup.find("h3", class_="auto-content_title").text.strip()
@@ -50,20 +49,16 @@ def get_advertisement_info():
     )
     mileage = int("".join(filter(str.isdigit, mileage_text)))
 
+    color_element = soup.find("div", class_="technical-info", id="details")
     color = (
-        soup.find("div", class_="technical-info", id="details")
-        .find("span", class_="car-color")
-        .find_parent("span", class_="argument")
-        .text
+        color_element.find("span", class_="car-color").find_parent("span", class_="argument").text
+        if color_element and color_element.find("span", class_="car-color") else "Unknown"
     )
 
-    salon = (
-        soup.find("span", string="Матеріали салону")
-        .find_next("span", class_="argument")
-        .text.strip()
-    )
+    salon_element = soup.find("span", string="Матеріали салону")
+    salon = salon_element.find_next("span", class_="argument").text.strip() if salon_element else "Unknown"
 
-    contacts = get_contact()
+    contacts = get_contact(car_url)
 
     cached_at = func.now()
 
