@@ -100,5 +100,3 @@ def save_car_to_database(car_item):
     db.refresh(car)
     db.close()
     return car
-
-
