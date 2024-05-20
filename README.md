@@ -32,8 +32,11 @@ venv\Scripts\activate (Windows)
 ```shell
 pip install -r requirements.txt
 ```
-
-### 5.Run:
+### 5. Run Alembic Migrations:
+```shell
+ alembic upgrade head
+```
+### 6.Run:
 ```shell
 uvicorn aggregator_of_advertisements.main:app --reload
 ```
